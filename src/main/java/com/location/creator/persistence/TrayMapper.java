@@ -16,6 +16,7 @@ public final class TrayMapper {
                 .traySize(tray.size())
                 .nummer(tray.nummer())
                 .standort(tray.standort())
+                .rootLocation(tray.rootLocation())
                 .datumAusgabe(tray.datumAusgabe())
                 .datumRueckgabe(tray.datumRueckgabe())
                 .fuellstand(tray.fuellstand())
@@ -29,6 +30,7 @@ public final class TrayMapper {
                 entity.getTraySize(),
                 entity.getNummer(),
                 entity.getStandort(),
+                entity.getRootLocation(),
                 entity.getDatumAusgabe(),
                 entity.getDatumRueckgabe(),
                 entity.getFuellstand(),

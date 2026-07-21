@@ -1,5 +1,6 @@
 package com.location.creator.reader;
 
+import com.location.creator.domain.LocationResolver;
 import com.location.creator.domain.Tray;
 import com.location.creator.domain.TraySize;
 import lombok.extern.slf4j.Slf4j;
@@ -62,10 +63,12 @@ public class CsvTrayReader {
 
     private Tray parseLine(TraySize size, String line, int lineNumber) {
         String[] cols = line.split(DELIMITER, -1);
+        String standort = col(cols, 1);
         return new Tray(
                 size,
                 col(cols, 0),
-                col(cols, 1),
+                standort,
+                LocationResolver.fromStandort(standort),
                 col(cols, 2),
                 col(cols, 3),
                 col(cols, 4),

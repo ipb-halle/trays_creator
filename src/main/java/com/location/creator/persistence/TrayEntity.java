@@ -1,5 +1,6 @@
 package com.location.creator.persistence;
 
+import com.location.creator.domain.Locations;
 import com.location.creator.domain.TraySize;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,6 +31,10 @@ public class TrayEntity {
 
     @Column
     private String standort;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "root_location")
+    private Locations rootLocation;
 
     @Column(name = "datum_ausgabe")
     private String datumAusgabe;

@@ -8,6 +8,7 @@ public record Tray(
         TraySize size,
         String nummer,
         String standort,
+        Locations rootLocation,
         String datumAusgabe,
         String datumRueckgabe,
         String fuellstand,
