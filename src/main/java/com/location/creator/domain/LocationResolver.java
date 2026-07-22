@@ -4,7 +4,7 @@ package com.location.creator.domain;
  * Leitet aus einem rohen {@code standort}-String die Root-Location (Raum) ab.
  *
  * <p>Normalisiert den Wert (trim, Großschreibung, Punkte/Leerzeichen entfernt)
- * und matcht per Präfix auf den {@link Locations#code()}. Werte, die keinen
+ * und matcht per Präfix auf den {@link Rooms#code()}. Werte, die keinen
  * bekannten Raum tragen (z.B. Person-/Fremd-IDs wie {@code 2503702} oder
  * benannte Lager wie {@code Trockenlager}), liefern {@code null}.
  */
@@ -13,7 +13,7 @@ public final class LocationResolver {
     private LocationResolver() {
     }
 
-    public static Locations fromStandort(String standort) {
+    public static Rooms fromStandort(String standort) {
         if (standort == null) {
             return null;
         }
@@ -23,7 +23,7 @@ public final class LocationResolver {
         if (norm.isEmpty()) {
             return null;
         }
-        for (Locations location : Locations.values()) {
+        for (Rooms location : Rooms.values()) {
             if (norm.startsWith(location.code())) {
                 return location;
             }

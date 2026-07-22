@@ -31,6 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
-src/main/resources
-env.properties
-
+src/main/resources/csv
+.env.properties
+src/test/resources/fixtures
+logs/

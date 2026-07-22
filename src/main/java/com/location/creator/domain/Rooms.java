@@ -1,12 +1,12 @@
 package com.location.creator.domain;
 
 /**
- * Kuratierte Root-Locations (Räume) laut IPB/SNB-Nummerierungsschema.
+ * Kuratierte Root-Rooms (Räume) laut IPB/SNB-Nummerierungsschema.
  * Der {@code code} ist die reale Schreibweise im {@code standort}-String
  * (z.B. mit Bindestrich bei {@code R2-109}), da der Java-Enum-Name keinen
  * Bindestrich enthalten darf.
  */
-public enum Locations {
+public enum Rooms {
     R002("R002"),
     R003("R003"),
     R007("R007"),
@@ -20,7 +20,7 @@ public enum Locations {
 
     private final String code;
 
-    Locations(String code) {
+    Rooms(String code) {
         this.code = code;
     }
 

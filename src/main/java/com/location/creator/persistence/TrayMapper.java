@@ -9,6 +9,7 @@ import com.location.creator.domain.Tray;
 public final class TrayMapper {
 
     private TrayMapper() {
+        throw new AssertionError("Keine Instanzen!");
     }
 
     public static TrayEntity toEntity(Tray tray) {
