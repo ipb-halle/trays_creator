@@ -27,8 +27,7 @@
 
 ## Überblick
 
-Trays Creator ist ein Import- und Persistenz-Dienst für die Verwaltung von Lagerorten in einem
-Labor-Inventar. Er bündelt zwei Datenquellen unter einem gemeinsamen Domänenmodell:
+Trays Creator verwaltet die Lagerort-Hierarchie eines Labor-Inventars. Trays bilden die unterste Ebene — die physischen Behälter mit Raster, die die Proben aufnehmen; größere Lagerorte (Räume, Kühlschränke, Regale) bilden den Rahmen darum. Der Dienst bündelt zwei Quellen: konkrete Tray-Instanzen aus CSV und die Typ-Definitionen aller Lagerort-Arten aus der Signals-API.
 
 | Quelle | Was kommt rein | Ergebnis |
 |--------|----------------|----------|
