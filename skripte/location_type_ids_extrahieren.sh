@@ -1,8 +1,7 @@
 python3 - <<'PY'
 import json
-d = json.load(open('../api_jsons/entities_locations.json'))
+d = json.load(open('../api_jsons/inventory_types_location.json'))
 result = {}
-
 
 for index, node in enumerate(d['data'], start=1):
   eid=node['id']
@@ -10,5 +9,5 @@ for index, node in enumerate(d['data'], start=1):
   result[name] = eid
 
 print(json.dumps(result))
-json.dump(result, open('../api_jsons/locations_ids.json', "w"), ensure_ascii=False)
+json.dump(result, open('../api_jsons/location_type_ids.json', "w"), ensure_ascii=False)
 PY

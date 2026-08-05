@@ -1,7 +1,6 @@
 package com.location.creator.rest;
 
 import com.location.creator.domain.LocationType;
-import com.location.creator.domain.LocationTypeField;
 import com.location.creator.domain.LocationTypes;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.JsonNode;
