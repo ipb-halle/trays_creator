@@ -1,11 +1,13 @@
 package com.location.creator.domain;
 
 public enum LocationTypes {
+    BUILDING("Building"),
     ROOM("Room"),
     REFRIGERATOR("Refrigerator"),
     FREEZER("Freezer"),
     BENCH("Bench"),
     SHELF("Shelf"),
+    DRAWER("Drawer"),
     TRAY("Tray");
 
     private final String apiName;

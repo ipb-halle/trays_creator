@@ -1,7 +1,6 @@
 package com.location.creator.persistence;
 
 
-import com.location.creator.domain.LocationTypeField;
 import com.location.creator.domain.LocationTypes;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,7 +28,7 @@ public class LocationTypeEntity {
     private String name;
 
     @Column
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private LocationTypes type;
 
     @ElementCollection
@@ -37,7 +36,6 @@ public class LocationTypeEntity {
             name = "fields",
             joinColumns = @JoinColumn(name = "inventory_types_id")
     )
-    @Column(name = "field", columnDefinition = "text")
-    private List<LocationTypeField> fields = new ArrayList<>();
+    private List<LocationTypeFieldEmbeddable> fields = new ArrayList<>();
 
 }

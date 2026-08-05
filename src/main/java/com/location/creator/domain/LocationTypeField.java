@@ -1,7 +1,7 @@
 package com.location.creator.domain;
 
 public record LocationTypeField(
-        String id,
+        String eid,
         String title,
         boolean required
 ) {
