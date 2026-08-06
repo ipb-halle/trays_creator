@@ -2,6 +2,7 @@ package com.location.creator.rest;
 
 import com.location.creator.domain.LocationType;
 import com.location.creator.domain.LocationTypes;
+import com.location.creator.persistence.LocationTypeFieldEmbeddable;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.JsonNode;
 
@@ -19,7 +20,7 @@ public final class LocationTypeParser {
                 String eid = attributes.path("id").asString();
                 String name = attributes.path("name").asString();
                 LocationTypes type = LocationTypes.fromName(name);
-                List<LocationTypeField> fields = new ArrayList<>();
+                List<LocationTypeFieldEmbeddable> fields = new ArrayList<>();
                 JsonNode fieldsArrayNode = attributes.path("fields");
                 if (!fieldsArrayNode.isMissingNode() && fieldsArrayNode.isArray()) {
                     for (JsonNode node1 : fieldsArrayNode) {
@@ -29,7 +30,7 @@ public final class LocationTypeParser {
                         if (!node1.path("definition").path("isRequired").isMissingNode()) {
                             required = node1.path("definition").path("isRequired").asBoolean();
                         }
-                        LocationTypeField field = new LocationTypeField(fieldId, title, required);
+                        LocationTypeFieldEmbeddable field = new LocationTypeFieldEmbeddable(fieldId, title, required);
                         fields.add(field);
                     }
                 }
