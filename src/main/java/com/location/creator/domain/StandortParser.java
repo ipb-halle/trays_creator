@@ -1,6 +1,9 @@
 package com.location.creator.domain;
 
+import org.jspecify.annotations.NonNull;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public final class StandortParser {
@@ -22,8 +25,62 @@ public final class StandortParser {
 
         LocationNode deviceNode = null;
         LocationNode schelfDrawNode = null;
-        String device = locationPath.replaceAll(room.code(), "").substring(0, 1);
-        String[] numbers = locationPath.replaceAll(room.code(), "").split("[^0-9]+");
+
+        // extraction of device letter from path K, G, P
+        String deviceLetter = locationPath.replace(".", "").replaceAll(room.code(), "").substring(0, 1);
+
+        List<String> numberList = getStrings(locationPath, deviceLetter);
+
+        switch (deviceLetter) {
+            case "K" -> {
+                deviceNode = new LocationNode(LocationTypes.REFRIGERATOR, deviceLetter + numberList.get(0));
+                nodes.add(deviceNode);
+
+                if (numberList.size() >= 2) {
+                    if (numberList.size() == 2) {
+                        schelfDrawNode = new LocationNode(LocationTypes.SHELF, numberList.get(1));
+                    } else {
+                        schelfDrawNode = new LocationNode(LocationTypes.SHELF, numberList.get(2));
+                    }
+                    nodes.add(schelfDrawNode);
+
+                }
+            }
+            case "G" -> {
+                deviceNode = new LocationNode(LocationTypes.FREEZER, deviceLetter + numberList.get(0));
+                nodes.add(deviceNode);
+
+                if (numberList.size() >= 2) {
+                    if (numberList.size() == 2) {
+                        schelfDrawNode = new LocationNode(LocationTypes.DRAWER, numberList.get(1));
+                    } else {
+                        schelfDrawNode = new LocationNode(LocationTypes.DRAWER, numberList.get(2));
+                    }
+                    nodes.add(schelfDrawNode);
+                }
+            }
+            case "P" -> {
+                deviceNode = new LocationNode(LocationTypes.BENCH, deviceLetter + numberList.get(0));
+                nodes.add(deviceNode);
+
+            }
+        }
+
+        return nodes;
+
+    }
+
+    private static @NonNull List<String> getStrings(String locationPath, String deviceLetter) {
+        String device = switch (deviceLetter) {
+            case "K" -> locationPath.substring(locationPath.indexOf("K"));
+            case "G" -> locationPath.substring(locationPath.indexOf("G"));
+            case "P" -> locationPath.substring(locationPath.indexOf("P"));
+            default -> null;
+        };
+
+        assert device != null;
+        String[] numbers = device.split("[^0-9]+");
+
         List<String> numberList = new ArrayList<>();
         for (String number : numbers) {
             if (number.isEmpty()) {
@@ -31,23 +88,6 @@ public final class StandortParser {
             }
             numberList.add(number);
         }
-        switch (device) {
-            case "K" -> {
-                deviceNode = new LocationNode(LocationTypes.REFRIGERATOR, device + numberList.get(0));
-                schelfDrawNode = new LocationNode(LocationTypes.SHELF, numberList.get(1));
-            }
-            case "G" -> {
-                deviceNode = new LocationNode(LocationTypes.FREEZER, device + numberList.get(0));
-                schelfDrawNode = new LocationNode(LocationTypes.DRAWER, numberList.get(1));
-            }
-            case "P" -> {
-                deviceNode = new LocationNode(LocationTypes.BENCH, device + numberList.get(0));
-            }
-        }
-        nodes.add(deviceNode);
-        nodes.add(schelfDrawNode);
-
-        return nodes;
-
+        return numberList;
     }
 }

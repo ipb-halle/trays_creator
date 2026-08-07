@@ -37,14 +37,14 @@ public class StandortParserTest {
 
     public static Stream<Arguments> resolvedCases() {
         return Stream.of(
-                Arguments.of("R-208K1-3", List.of(
+                Arguments.of("R2-208K1-3", List.of(
                         new LocationNode(LocationTypes.BUILDING, "R"),
-                        new LocationNode(LocationTypes.ROOM, "R-208"),
+                        new LocationNode(LocationTypes.ROOM, "R2-208"),
                         new LocationNode(LocationTypes.REFRIGERATOR, "K1"),
                         new LocationNode(LocationTypes.SHELF, "3"))),
-                Arguments.of("R-304G1-5", List.of(
+                Arguments.of("R2-304G1-5", List.of(
                         new LocationNode(LocationTypes.BUILDING, "R"),
-                        new LocationNode(LocationTypes.ROOM, "R-304"),
+                        new LocationNode(LocationTypes.ROOM, "R2-304"),
                         new LocationNode(LocationTypes.FREEZER, "G1"),
                         new LocationNode(LocationTypes.DRAWER, "5"))),
                 Arguments.of("R003.K3", List.of(
