@@ -26,14 +26,11 @@ public final class StandortParser {
         nodes.add(buildNode);
         nodes.add(roomNode);
 
-        // extraction of device letter from path K, G, P
         String locationPathCleaned = normalizedLocationPath.replace(".", "").replace("-", "");
 
         char deviceChar = getDeviceLetter(locationPathCleaned);
 
         List<String> numbers = extractNumbers(normalizedLocationPath, deviceChar);
-
-
 
         LocationTypes deviceType = switch (deviceChar) {
             case 'K' -> LocationTypes.REFRIGERATOR;
@@ -49,8 +46,12 @@ public final class StandortParser {
             default -> null;
         };
 
-        addDeviceAndChild(deviceType, childType, numbers, nodes, deviceChar);
-
+        LocationNode deviceNode = new LocationNode(deviceType, String.valueOf(deviceChar) + numbers.get(0));
+        nodes.add(deviceNode);
+        if (numbers.size() == 2 && childType != null) {
+            LocationNode childNode = new LocationNode(childType, numbers.get(1));
+            nodes.add(childNode);
+        }
         return nodes;
 
     }
@@ -66,15 +67,6 @@ public final class StandortParser {
             }
         }
         return NO_DEVICE;
-    }
-
-    private static void addDeviceAndChild(LocationTypes deviceType, LocationTypes childType, List<String> numbers, List<LocationNode> nodes, char deviceChar) {
-        LocationNode deviceNode = new LocationNode(deviceType, deviceChar + numbers.get(0));
-        nodes.add(deviceNode);
-        if (numbers.size() == 2 && childType !=null) {
-            LocationNode childNode = new LocationNode(childType, numbers.get(1));
-            nodes.add(childNode);
-        }
     }
 
     private static List<String> extractNumbers(String locationPath, char deviceLetter) {
