@@ -1,7 +1,5 @@
 package com.location.creator.domain;
 
-import org.jspecify.annotations.NonNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +13,11 @@ public final class StandortParser {
     public static List<LocationNode> parsePath(String locationPath) {
 
         if (locationPath == null) return null;
+        String normalizedLocationPath = locationPath.trim().toUpperCase();
+
         List<LocationNode> nodes = new ArrayList<>();
 
-        Rooms room = LocationResolver.fromStandort(locationPath);
+        Rooms room = LocationResolver.fromStandort(normalizedLocationPath);
         LocationNode roomNode = new LocationNode(LocationTypes.ROOM, room.code());
 
         String building = room.code().substring(0, 1);
@@ -27,11 +27,13 @@ public final class StandortParser {
         nodes.add(roomNode);
 
         // extraction of device letter from path K, G, P
-        String locationPathCleaned = locationPath.trim().replace(".", "").replace("-", "").toUpperCase();
+        String locationPathCleaned = normalizedLocationPath.replace(".", "").replace("-", "");
 
         char deviceChar = getDeviceLetter(locationPathCleaned);
 
-        List<String> listOfDeviceAndItsChildNumbers = extractNumbers(locationPath, String.valueOf(deviceChar));
+        List<String> numbers = extractNumbers(normalizedLocationPath, deviceChar);
+
+
 
         LocationTypes deviceType = switch (deviceChar) {
             case 'K' -> LocationTypes.REFRIGERATOR;
@@ -47,41 +49,37 @@ public final class StandortParser {
             default -> null;
         };
 
-        addDeviceAndChild(deviceType, childType, listOfDeviceAndItsChildNumbers, nodes, deviceChar);
+        addDeviceAndChild(deviceType, childType, numbers, nodes, deviceChar);
 
         return nodes;
 
     }
 
     private static char getDeviceLetter(String locationPathCleaned) {
-        for (int i = 0; i < locationPathCleaned.length(); i++) {
+        int length = locationPathCleaned.length();
+        for (int i = 0; i < length; i++) {
             char c = locationPathCleaned.charAt(i);
-            if (c == 'K' || c == 'G' || c == 'P') {
-                if ((i != (locationPathCleaned.length() - 1))) {
-                    char number = locationPathCleaned.charAt(i + 1);
-                    if (Character.isDigit(number)) {
-                        return c;
-                    }
-                }
+            //   Buchstabe K G oder P und noch danach ein symbol gibt und dieses symbol it eine Ziffer
+            if ((c == 'K' || c == 'G' || c == 'P') && i + 1 < length) {
+                char number = locationPathCleaned.charAt(i + 1);
+                if (Character.isDigit(number)) return c;
             }
         }
         return NO_DEVICE;
     }
 
-    private static void addDeviceAndChild(LocationTypes deviceType, LocationTypes childType, List<String> listOfDeviceAndItsChildNumbers, List<LocationNode> nodes, char deviceChar) {
-        LocationNode deviceNode;
-        LocationNode childNode;
-        deviceNode = new LocationNode(deviceType, deviceChar + listOfDeviceAndItsChildNumbers.get(0));
+    private static void addDeviceAndChild(LocationTypes deviceType, LocationTypes childType, List<String> numbers, List<LocationNode> nodes, char deviceChar) {
+        LocationNode deviceNode = new LocationNode(deviceType, deviceChar + numbers.get(0));
         nodes.add(deviceNode);
-        if (listOfDeviceAndItsChildNumbers.size() == 2) {
-            childNode = new LocationNode(childType, listOfDeviceAndItsChildNumbers.get(1));
+        if (numbers.size() == 2 && childType !=null) {
+            LocationNode childNode = new LocationNode(childType, numbers.get(1));
             nodes.add(childNode);
         }
     }
 
-    private static List<String> extractNumbers(String locationPath, String deviceLetter) {
-
-        String[] numbers = locationPath.substring(locationPath.indexOf(deviceLetter)).split("[^0-9]+");
+    private static List<String> extractNumbers(String locationPath, char deviceLetter) {
+        int indexOfLetter = locationPath.indexOf(deviceLetter);
+        String[] numbers = locationPath.substring(indexOfLetter).split("[^0-9]+");
         List<String> numberList = new ArrayList<>();
         for (String number : numbers) {
             if (number.isEmpty()) {

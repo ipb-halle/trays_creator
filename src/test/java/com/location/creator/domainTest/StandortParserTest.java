@@ -3,7 +3,6 @@ package com.location.creator.domainTest;
 import com.location.creator.domain.LocationNode;
 import com.location.creator.domain.LocationTypes;
 import com.location.creator.domain.StandortParser;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -14,19 +13,6 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class StandortParserTest {
-
-    @Test
-    public void test_parse_simple_case_of_location_string() {
-        String path = "R2-208K1-3";
-        LocationNode building = new LocationNode(LocationTypes.BUILDING, "R");
-        LocationNode room = new LocationNode(LocationTypes.ROOM, "R2-208");
-        LocationNode fridge = new LocationNode(LocationTypes.REFRIGERATOR, "K1");
-        LocationNode shelf = new LocationNode(LocationTypes.SHELF, "3");
-
-
-        List<LocationNode> locationNodes = StandortParser.parsePath(path);
-        assertThat(locationNodes).containsExactly(building, room, fridge, shelf);
-    }
 
     @ParameterizedTest
     @MethodSource("resolvedCases")
@@ -64,7 +50,12 @@ public class StandortParserTest {
                         new LocationNode(LocationTypes.BUILDING, "R"),
                         new LocationNode(LocationTypes.ROOM, "R002"),
                         new LocationNode(LocationTypes.FREEZER, "G11"),
-                        new LocationNode(LocationTypes.DRAWER, "2")))
+                        new LocationNode(LocationTypes.DRAWER, "2"))),
+                Arguments.of("r2-208k1-3", List.of(
+                        new LocationNode(LocationTypes.BUILDING, "R"),
+                        new LocationNode(LocationTypes.ROOM, "R2-208"),
+                        new LocationNode(LocationTypes.REFRIGERATOR, "K1"),
+                        new LocationNode(LocationTypes.SHELF, "3")))
         );
     }
 }

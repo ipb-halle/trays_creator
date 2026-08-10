@@ -17,7 +17,7 @@ public final class LocationResolver {
         if (standort == null) {
             return null;
         }
-        String norm = standort.trim().toUpperCase()
+        String norm = standort
                 .replace(".", "")
                 .replace(" ", "");
         if (norm.isEmpty()) {
