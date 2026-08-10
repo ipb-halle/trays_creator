@@ -59,9 +59,12 @@ public class StandortParserTest {
                         new LocationNode(LocationTypes.BUILDING, "R"),
                         new LocationNode(LocationTypes.ROOM, "R104"),
                         new LocationNode(LocationTypes.FREEZER, "G1"),
-                        new LocationNode(LocationTypes.DRAWER, "1")))
+                        new LocationNode(LocationTypes.DRAWER, "1"))),
+                Arguments.of("R002.G11.2", List.of(
+                        new LocationNode(LocationTypes.BUILDING, "R"),
+                        new LocationNode(LocationTypes.ROOM, "R002"),
+                        new LocationNode(LocationTypes.FREEZER, "G11"),
+                        new LocationNode(LocationTypes.DRAWER, "2")))
         );
     }
-
-
 }

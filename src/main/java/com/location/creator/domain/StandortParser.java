@@ -3,10 +3,11 @@ package com.location.creator.domain;
 import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public final class StandortParser {
+
+    private static final char NO_DEVICE = '\0';
 
     private StandortParser() {
     }
@@ -15,72 +16,72 @@ public final class StandortParser {
 
         if (locationPath == null) return null;
         List<LocationNode> nodes = new ArrayList<>();
-        String building = locationPath.trim().substring(0, 1).toUpperCase();
-        LocationNode buildNode = new LocationNode(LocationTypes.BUILDING, building);
-        nodes.add(buildNode);
+
         Rooms room = LocationResolver.fromStandort(locationPath);
         LocationNode roomNode = new LocationNode(LocationTypes.ROOM, room.code());
+
+        String building = room.code().substring(0, 1);
+        LocationNode buildNode = new LocationNode(LocationTypes.BUILDING, building);
+
+        nodes.add(buildNode);
         nodes.add(roomNode);
 
-
-        LocationNode deviceNode = null;
-        LocationNode schelfDrawNode = null;
-
         // extraction of device letter from path K, G, P
-        String deviceLetter = locationPath.replace(".", "").replaceAll(room.code(), "").substring(0, 1);
+        String locationPathCleaned = locationPath.trim().replace(".", "").replace("-", "").toUpperCase();
 
-        List<String> numberList = getStrings(locationPath, deviceLetter);
+        char deviceChar = getDeviceLetter(locationPathCleaned);
 
-        switch (deviceLetter) {
-            case "K" -> {
-                deviceNode = new LocationNode(LocationTypes.REFRIGERATOR, deviceLetter + numberList.get(0));
-                nodes.add(deviceNode);
+        List<String> listOfDeviceAndItsChildNumbers = extractNumbers(locationPath, String.valueOf(deviceChar));
 
-                if (numberList.size() >= 2) {
-                    if (numberList.size() == 2) {
-                        schelfDrawNode = new LocationNode(LocationTypes.SHELF, numberList.get(1));
-                    } else {
-                        schelfDrawNode = new LocationNode(LocationTypes.SHELF, numberList.get(2));
-                    }
-                    nodes.add(schelfDrawNode);
+        LocationTypes deviceType = switch (deviceChar) {
+            case 'K' -> LocationTypes.REFRIGERATOR;
+            case 'G' -> LocationTypes.FREEZER;
+            case 'P' -> LocationTypes.BENCH;
+            default -> null;
+        };
 
-                }
-            }
-            case "G" -> {
-                deviceNode = new LocationNode(LocationTypes.FREEZER, deviceLetter + numberList.get(0));
-                nodes.add(deviceNode);
+        LocationTypes childType = switch (deviceChar) {
+            case 'K' -> LocationTypes.SHELF;
+            case 'G' -> LocationTypes.DRAWER;
+            case 'P' -> null;
+            default -> null;
+        };
 
-                if (numberList.size() >= 2) {
-                    if (numberList.size() == 2) {
-                        schelfDrawNode = new LocationNode(LocationTypes.DRAWER, numberList.get(1));
-                    } else {
-                        schelfDrawNode = new LocationNode(LocationTypes.DRAWER, numberList.get(2));
-                    }
-                    nodes.add(schelfDrawNode);
-                }
-            }
-            case "P" -> {
-                deviceNode = new LocationNode(LocationTypes.BENCH, deviceLetter + numberList.get(0));
-                nodes.add(deviceNode);
-
-            }
-        }
+        addDeviceAndChild(deviceType, childType, listOfDeviceAndItsChildNumbers, nodes, deviceChar);
 
         return nodes;
 
     }
 
-    private static @NonNull List<String> getStrings(String locationPath, String deviceLetter) {
-        String device = switch (deviceLetter) {
-            case "K" -> locationPath.substring(locationPath.indexOf("K"));
-            case "G" -> locationPath.substring(locationPath.indexOf("G"));
-            case "P" -> locationPath.substring(locationPath.indexOf("P"));
-            default -> null;
-        };
+    private static char getDeviceLetter(String locationPathCleaned) {
+        for (int i = 0; i < locationPathCleaned.length(); i++) {
+            char c = locationPathCleaned.charAt(i);
+            if (c == 'K' || c == 'G' || c == 'P') {
+                if ((i != (locationPathCleaned.length() - 1))) {
+                    char number = locationPathCleaned.charAt(i + 1);
+                    if (Character.isDigit(number)) {
+                        return c;
+                    }
+                }
+            }
+        }
+        return NO_DEVICE;
+    }
 
-        assert device != null;
-        String[] numbers = device.split("[^0-9]+");
+    private static void addDeviceAndChild(LocationTypes deviceType, LocationTypes childType, List<String> listOfDeviceAndItsChildNumbers, List<LocationNode> nodes, char deviceChar) {
+        LocationNode deviceNode;
+        LocationNode childNode;
+        deviceNode = new LocationNode(deviceType, deviceChar + listOfDeviceAndItsChildNumbers.get(0));
+        nodes.add(deviceNode);
+        if (listOfDeviceAndItsChildNumbers.size() == 2) {
+            childNode = new LocationNode(childType, listOfDeviceAndItsChildNumbers.get(1));
+            nodes.add(childNode);
+        }
+    }
 
+    private static List<String> extractNumbers(String locationPath, String deviceLetter) {
+
+        String[] numbers = locationPath.substring(locationPath.indexOf(deviceLetter)).split("[^0-9]+");
         List<String> numberList = new ArrayList<>();
         for (String number : numbers) {
             if (number.isEmpty()) {
