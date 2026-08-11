@@ -12,7 +12,7 @@ public enum UnresolvedReason {
         this.reason = reason;
     }
 
-    public String getMessageContent() {
+    public String message() {
         return reason;
     }
 }
