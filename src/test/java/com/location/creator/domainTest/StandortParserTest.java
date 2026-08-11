@@ -17,7 +17,7 @@ public class StandortParserTest {
     public void parsePath_resolvesValidStandort(String path, List<LocationNode> expectedNodes) {
 
 
-        ParseResultRecord parsResult = StandortParser.parsePath(path);
+        ParseResult parsResult = StandortParser.parsePath(path);
         List<LocationNode> locationNodes = parsResult.resolvedNodes();
 
         assertThat(locationNodes).containsExactlyElementsOf(expectedNodes);
@@ -64,7 +64,7 @@ public class StandortParserTest {
     @ParameterizedTest
     @MethodSource("unresolvedClasses")
     public void parsePath_reportsReasonForUnresolvableStandort(String path, UnresolvedReason reason) {
-        ParseResultRecord result = StandortParser.parsePath(path);
+        ParseResult result = StandortParser.parsePath(path);
         assertThat(reason).isEqualByComparingTo(result.reason());
     }
 

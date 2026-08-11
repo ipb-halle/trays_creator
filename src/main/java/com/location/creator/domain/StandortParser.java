@@ -10,19 +10,17 @@ public final class StandortParser {
     private StandortParser() {
     }
 
-    public static ParseResultRecord parsePath(String locationPath) {
+    public static ParseResult parsePath(String locationPath) {
 
-        if (locationPath == null) {
-            return ParseResultRecord.unresolved(locationPath, UnresolvedReason.EMPTY_PATH);
-        }
-
+        if (locationPath == null) return ParseResult.unresolved(locationPath, UnresolvedReason.EMPTY_PATH);
         String normalizedLocationPath = locationPath.trim().toUpperCase();
+        if (normalizedLocationPath.isEmpty())
+            return ParseResult.unresolved(locationPath, UnresolvedReason.EMPTY_PATH);
 
         List<LocationNode> nodes = new ArrayList<>();
 
         Rooms room = LocationResolver.fromStandort(normalizedLocationPath);
-        if (room == null)
-            return ParseResultRecord.unresolved(locationPath, UnresolvedReason.NOT_VALID_ROOM);
+        if (room == null) return ParseResult.unresolved(locationPath, UnresolvedReason.NOT_VALID_ROOM);
         LocationNode roomNode = new LocationNode(LocationTypes.ROOM, room.code());
 
         String building = room.code().substring(0, 1);
@@ -34,8 +32,10 @@ public final class StandortParser {
         String locationPathCleaned = normalizedLocationPath.replace(".", "").replace("-", "");
 
         char deviceChar = getDeviceLetter(locationPathCleaned);
+        if (deviceChar == NO_DEVICE) return ParseResult.unresolved(locationPath, UnresolvedReason.NO_DEVICE);
 
         List<String> numbers = extractNumbers(normalizedLocationPath, deviceChar);
+        if (numbers.isEmpty()) return ParseResult.unresolved(locationPath, UnresolvedReason.NO_DEVICE);
 
         LocationTypes deviceType = switch (deviceChar) {
             case 'K' -> LocationTypes.REFRIGERATOR;
@@ -59,7 +59,7 @@ public final class StandortParser {
             nodes.add(childNode);
         }
 
-        return ParseResultRecord.resolved(locationPath, nodes);
+        return ParseResult.resolved(locationPath, nodes);
 
     }
 
