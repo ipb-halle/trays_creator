@@ -10,9 +10,12 @@ public final class StandortParser {
     private StandortParser() {
     }
 
-    public static List<LocationNode> parsePath(String locationPath) {
+    public static ParseResultRecord parsePath(String locationPath) {
 
-        if (locationPath == null) return null;
+        if (locationPath == null) {
+            return new ParseResultRecord(locationPath, new ArrayList<>(), ParsePathUnresolvedReason.EMPTY_PATH);
+        }
+
         String normalizedLocationPath = locationPath.trim().toUpperCase();
 
         List<LocationNode> nodes = new ArrayList<>();
@@ -48,11 +51,13 @@ public final class StandortParser {
 
         LocationNode deviceNode = new LocationNode(deviceType, String.valueOf(deviceChar) + numbers.get(0));
         nodes.add(deviceNode);
+
         if (numbers.size() == 2 && childType != null) {
             LocationNode childNode = new LocationNode(childType, numbers.get(1));
             nodes.add(childNode);
         }
-        return nodes;
+
+        return new ParseResultRecord(locationPath, nodes, null);
 
     }
 

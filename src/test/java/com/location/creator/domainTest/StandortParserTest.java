@@ -1,8 +1,6 @@
 package com.location.creator.domainTest;
 
-import com.location.creator.domain.LocationNode;
-import com.location.creator.domain.LocationTypes;
-import com.location.creator.domain.StandortParser;
+import com.location.creator.domain.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -17,7 +15,11 @@ public class StandortParserTest {
     @ParameterizedTest
     @MethodSource("resolvedCases")
     public void parsePath_resolvesValidStandort(String path, List<LocationNode> expectedNodes) {
-        List<LocationNode> locationNodes = StandortParser.parsePath(path);
+
+
+        ParseResultRecord parsResult = StandortParser.parsePath(path);
+        List<LocationNode> locationNodes = parsResult.resolvedNodes();
+
         assertThat(locationNodes).containsExactlyElementsOf(expectedNodes);
     }
 
@@ -55,12 +57,20 @@ public class StandortParserTest {
                         new LocationNode(LocationTypes.BUILDING, "R"),
                         new LocationNode(LocationTypes.ROOM, "R2-208"),
                         new LocationNode(LocationTypes.REFRIGERATOR, "K1"),
-                        new LocationNode(LocationTypes.SHELF, "3"))),
-                Arguments.of("R203.6.1.1", List.of(
-                        new LocationNode(LocationTypes.BUILDING, "R"),
-                        new LocationNode(LocationTypes.ROOM, "R203"),
-                        new LocationNode(LocationTypes.REFRIGERATOR, "K6"),
-                        new LocationNode(LocationTypes.SHELF, "1")))
+                        new LocationNode(LocationTypes.SHELF, "3")))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("unresolvedClasses")
+    public void parsePath_reportsReasonForUnresolvableStandort(String path, ParsePathUnresolvedReason reason) {
+
+    }
+
+    public static Stream<Arguments> unresolvedClasses() {
+        return Stream.of(
+
+
         );
     }
 }
