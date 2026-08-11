@@ -13,7 +13,7 @@ public final class StandortParser {
     public static ParseResultRecord parsePath(String locationPath) {
 
         if (locationPath == null) {
-            return new ParseResultRecord(locationPath, new ArrayList<>(), ParsePathUnresolvedReason.EMPTY_PATH);
+            return  ParseResultRecord.unresolved(locationPath, new ArrayList<>(), UnresolvedReason.EMPTY_PATH);
         }
 
         String normalizedLocationPath = locationPath.trim().toUpperCase();
@@ -57,7 +57,7 @@ public final class StandortParser {
             nodes.add(childNode);
         }
 
-        return new ParseResultRecord(locationPath, nodes, null);
+        return  ParseResultRecord.resolved(locationPath, nodes, null);
 
     }
 

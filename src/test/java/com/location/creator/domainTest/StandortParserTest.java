@@ -63,13 +63,13 @@ public class StandortParserTest {
 
     @ParameterizedTest
     @MethodSource("unresolvedClasses")
-    public void parsePath_reportsReasonForUnresolvableStandort(String path, ParsePathUnresolvedReason reason) {
+    public void parsePath_reportsReasonForUnresolvableStandort(String path, UnresolvedReason reason) {
 
     }
 
     public static Stream<Arguments> unresolvedClasses() {
         return Stream.of(
-
+                Arguments.of(null, UnresolvedReason.EMPTY_PATH)
 
         );
     }
