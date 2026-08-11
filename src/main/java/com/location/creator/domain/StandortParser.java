@@ -36,6 +36,7 @@ public final class StandortParser {
 
         List<String> numbers = extractNumbers(normalizedLocationPath, deviceChar);
         if (numbers.isEmpty()) return ParseResult.unresolved(locationPath, UnresolvedReason.NO_DEVICE);
+        if (numbers.size() > 2) return ParseResult.unresolved(locationPath, UnresolvedReason.AMBIGUOUS_NUMBERS);
 
         LocationTypes deviceType = switch (deviceChar) {
             case 'K' -> LocationTypes.REFRIGERATOR;
@@ -54,7 +55,10 @@ public final class StandortParser {
         LocationNode deviceNode = new LocationNode(deviceType, String.valueOf(deviceChar) + numbers.get(0));
         nodes.add(deviceNode);
 
-        if (numbers.size() == 2 && childType != null) {
+        if (numbers.size() == 2) {
+            if (childType == null) {
+                return ParseResult.unresolved(locationPath, UnresolvedReason.AMBIGUOUS_NUMBERS);
+            }
             LocationNode childNode = new LocationNode(childType, numbers.get(1));
             nodes.add(childNode);
         }
