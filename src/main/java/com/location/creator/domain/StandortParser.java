@@ -13,7 +13,7 @@ public final class StandortParser {
     public static ParseResultRecord parsePath(String locationPath) {
 
         if (locationPath == null) {
-            return  ParseResultRecord.unresolved(locationPath, new ArrayList<>(), UnresolvedReason.EMPTY_PATH);
+            return ParseResultRecord.unresolved(locationPath, UnresolvedReason.EMPTY_PATH);
         }
 
         String normalizedLocationPath = locationPath.trim().toUpperCase();
@@ -21,6 +21,8 @@ public final class StandortParser {
         List<LocationNode> nodes = new ArrayList<>();
 
         Rooms room = LocationResolver.fromStandort(normalizedLocationPath);
+        if (room == null)
+            return ParseResultRecord.unresolved(locationPath, UnresolvedReason.NOT_VALID_ROOM);
         LocationNode roomNode = new LocationNode(LocationTypes.ROOM, room.code());
 
         String building = room.code().substring(0, 1);
@@ -57,7 +59,7 @@ public final class StandortParser {
             nodes.add(childNode);
         }
 
-        return  ParseResultRecord.resolved(locationPath, nodes, null);
+        return ParseResultRecord.resolved(locationPath, nodes);
 
     }
 

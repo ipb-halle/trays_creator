@@ -2,7 +2,7 @@ package com.location.creator.domain;
 
 public enum UnresolvedReason {
     EMPTY_PATH("Location path is null!"),
-    NOT_VALID_ROOM("The room in location path is not exist!"),
+    NOT_VALID_ROOM("The room in location path is not exist is NULL!"),
     NO_DEVICE("No information about device in location path!");
 
     private final String reason;

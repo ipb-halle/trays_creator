@@ -9,17 +9,15 @@ public record ParseResultRecord(
         UnresolvedReason reason
 ) {
 
-    public static ParseResultRecord resolved(String path, List<LocationNode> resolvedNodes, UnresolvedReason reason) {
-        isResolved(true);
-        return new ParseResultRecord(path, resolvedNodes, reason);
+    public static ParseResultRecord resolved(String path, List<LocationNode> resolvedNodes) {
+        return new ParseResultRecord(path, resolvedNodes, null);
     }
 
-    public static ParseResultRecord unresolved(String path, List<LocationNode> resolvedNodes, UnresolvedReason reason) {
-        isResolved(false);
-        return new ParseResultRecord(path, resolvedNodes, reason);
+    public static ParseResultRecord unresolved(String path,  UnresolvedReason reason) {
+        return new ParseResultRecord(path, List.of(), reason);
     }
 
-    public static boolean isResolved(boolean descision) {
-        return  descision;
+    public boolean isResolved() {
+        return reason == null;
     }
 }

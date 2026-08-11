@@ -64,13 +64,16 @@ public class StandortParserTest {
     @ParameterizedTest
     @MethodSource("unresolvedClasses")
     public void parsePath_reportsReasonForUnresolvableStandort(String path, UnresolvedReason reason) {
-
+        ParseResultRecord result = StandortParser.parsePath(path);
+        assertThat(reason).isEqualByComparingTo(result.reason());
     }
 
     public static Stream<Arguments> unresolvedClasses() {
         return Stream.of(
-                Arguments.of(null, UnresolvedReason.EMPTY_PATH)
-
+                Arguments.of(null, UnresolvedReason.EMPTY_PATH),
+                Arguments.of("MedikSchHa D", UnresolvedReason.NOT_VALID_ROOM),
+                Arguments.of("05621", UnresolvedReason.NOT_VALID_ROOM),
+                Arguments.of("R203.6.1.1", UnresolvedReason.NO_DEVICE)
         );
     }
 }
