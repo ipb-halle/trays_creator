@@ -23,10 +23,6 @@ public final class StandortParser {
         if (room == null) return ParseResult.unresolved(locationPath, UnresolvedReason.NOT_VALID_ROOM);
         LocationNode roomNode = new LocationNode(LocationTypes.ROOM, room.code());
 
-        String building = room.code().substring(0, 1);
-        LocationNode buildNode = new LocationNode(LocationTypes.BUILDING, building);
-
-        nodes.add(buildNode);
         nodes.add(roomNode);
 
         String locationPathCleaned = normalizedLocationPath.replace(".", "").replace("-", "");
