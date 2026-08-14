@@ -26,4 +26,8 @@ public enum LocationTypes {
         }
         return null;
     }
+
+    public boolean isMovable() {
+        return this.movable;
+    }
 }
