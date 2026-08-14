@@ -9,43 +9,59 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TrayStandortParserTest {
 
-
     @Test
-    public void parseTray_splitsTraysIntoResolvedAndUnresolved() {
-        List<Tray> trays = buildTestList();
-        TrayParseResult trayParseResult = TrayStandortParser.parseTray(trays);
+    public void parseTray_putsValidStandortIntoResolved() {
+        List<String> strings = List.of("R2-208K1-3");
+        TrayParseResult result = buildTrayParseResult(strings);
+        Tray testTray = buildTray("R2-208K1-3");
 
-        assertThat(trayParseResult.resolved().size() + trayParseResult.unresolved().size()).isEqualTo(trays.size());
-        assertThat(trayParseResult.resolved().size()).isEqualTo(1);
-        assertThat(trayParseResult.unresolved().size()).isEqualTo(2);
+        assertThat(result.resolved().get(0).tray()).isEqualTo(testTray);
         List<LocationNode> nodes = List.of(
                 new LocationNode(LocationTypes.ROOM, "R2-208"),
                 new LocationNode(LocationTypes.REFRIGERATOR, "K1"),
                 new LocationNode(LocationTypes.SHELF, "3")
         );
-        assertThat(trayParseResult.resolved().get(0).path()).containsExactlyElementsOf(nodes);
-        assertThat(trayParseResult.resolved().get(0).tray()).isEqualTo(trays.get(0));
+        assertThat(result.resolved().get(0).path()).containsExactlyElementsOf(nodes);
+    }
 
-        assertThat(trayParseResult.unresolved().get(0).reason()).isEqualTo(UnresolvedReason.NOT_VALID_ROOM);
-        assertThat(trayParseResult.unresolved().get(0).tray()).isEqualTo(trays.get(1));
+    @Test
+    public void parseTray_putsUnknownRoomIntoUnresolved() {
+        List<String> strings = List.of("Trockenlager");
+        TrayParseResult result = buildTrayParseResult(strings);
+        Tray testTray = buildTray("Trockenlager");
 
-        assertThat(trayParseResult.unresolved().get(1).reason()).isEqualTo(UnresolvedReason.EMPTY_PATH);
-        assertThat(trayParseResult.unresolved().get(1).tray()).isEqualTo(trays.get(2));
+        assertThat(result.unresolved().get(0).tray()).isEqualTo(testTray);
+        assertThat(result.unresolved().get(0).reason()).isEqualTo(UnresolvedReason.NOT_VALID_ROOM);
+    }
 
+    @Test
+    public void parseTray_putsBlankStandortIntoUnresolved() {
+        List<String> strings = List.of("     ");
+        TrayParseResult result = buildTrayParseResult(strings);
+        Tray testTray = buildTray("     ");
+
+        assertThat(result.unresolved().get(0).tray()).isEqualTo(testTray);
+        assertThat(result.unresolved().get(0).reason()).isEqualTo(UnresolvedReason.EMPTY_PATH);
+    }
+
+    @Test
+    public void parseTray_returnsEmptyResultForEmptyInput(){
         List<Tray> empty = List.of();
         TrayParseResult result = TrayStandortParser.parseTray(empty);
         TrayParseResult test = new TrayParseResult(List.of(), List.of());
         assertThat(result).isEqualTo(test);
-
     }
 
-
-    private List<Tray> buildTestList() {
-        List<String> standorte = List.of("R2-208K1-3", "Trockenlager", "   ");
-        return standorte.stream().map(this::testDataBuilder).toList();
+    private TrayParseResult buildTrayParseResult(List<String> standorte) {
+        List<Tray> trays = buildTrayList(standorte);
+        return TrayStandortParser.parseTray(trays);
     }
 
-    private Tray testDataBuilder(String standort) {
+    private List<Tray> buildTrayList(List<String> standorte) {
+        return standorte.stream().map(this::buildTray).toList();
+    }
+
+    private Tray buildTray(String standort) {
         return new Tray(
                 TraySize.TS,
                 "testNummer",
