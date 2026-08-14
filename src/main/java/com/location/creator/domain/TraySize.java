@@ -10,7 +10,6 @@ public enum TraySize {
     TM("csv/tm_trays.csv", 3, 8),
     TL("csv/tl_trays.csv", 3, 8),
     TH("csv/th_trays.csv", 3, 8);
-
     private final String csvPath;
     private final int column;
     private final int row;
