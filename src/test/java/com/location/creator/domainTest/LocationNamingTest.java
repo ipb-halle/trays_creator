@@ -2,6 +2,7 @@ package com.location.creator.domainTest;
 
 import com.location.creator.domain.LocationNaming;
 import com.location.creator.domain.LocationTypes;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -9,8 +10,14 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 public class LocationNamingTest {
+
+    @Test
+    public void nameFor_throwsNullPointerExceptionByRoomCodeNull() {
+        assertThatThrownBy(() -> LocationNaming.nameFor(null, null, null));
+    }
 
 
     @ParameterizedTest

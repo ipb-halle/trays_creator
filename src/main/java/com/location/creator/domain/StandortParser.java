@@ -20,8 +20,9 @@ public final class StandortParser {
 
         Rooms room = LocationResolver.fromStandort(normalizedLocationPath);
         if (room == null) return ParseResult.unresolved(locationPath, UnresolvedReason.NOT_VALID_ROOM);
-        LocationNode roomNode = LocationNode.of(LocationTypes.ROOM, room.code(), room.code());
+        String roomCode = room.code();
 
+        LocationNode roomNode = LocationNode.of(LocationTypes.ROOM, roomCode, roomCode);
         nodes.add(roomNode);
 
         String locationPathCleaned = normalizedLocationPath.replace(".", "").replace("-", "");
@@ -47,14 +48,14 @@ public final class StandortParser {
             default -> null;
         };
 
-        LocationNode deviceNode = LocationNode.of(deviceType, String.valueOf(deviceChar) + numbers.get(0), room.code());
+        LocationNode deviceNode = LocationNode.of(deviceType, String.valueOf(deviceChar) + numbers.get(0), roomCode);
         nodes.add(deviceNode);
 
         if (numbers.size() == 2) {
             if (childType == null) {
                 return ParseResult.unresolved(locationPath, UnresolvedReason.AMBIGUOUS_NUMBERS);
             }
-            LocationNode childNode = LocationNode.of(childType, numbers.get(1), room.code());
+            LocationNode childNode = LocationNode.of(childType, numbers.get(1), roomCode);
             nodes.add(childNode);
         }
 
