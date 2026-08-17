@@ -1,7 +1,5 @@
 package com.location.creator.domain;
 
-import java.util.List;
-
 public final class LocationNaming {
 
     private LocationNaming() {
@@ -11,7 +9,7 @@ public final class LocationNaming {
 
         return switch (type) {
             case REFRIGERATOR, FREEZER, BENCH -> roomCode + "." + code;
-            default -> code;
+            case BUILDING, ROOM, SHELF, DRAWER, TRAY -> code;
         };
 
     }

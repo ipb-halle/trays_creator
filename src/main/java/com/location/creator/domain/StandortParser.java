@@ -14,14 +14,13 @@ public final class StandortParser {
 
         if (locationPath == null) return ParseResult.unresolved(locationPath, UnresolvedReason.EMPTY_PATH);
         String normalizedLocationPath = locationPath.trim().toUpperCase();
-        if (normalizedLocationPath.isEmpty())
-            return ParseResult.unresolved(locationPath, UnresolvedReason.EMPTY_PATH);
+        if (normalizedLocationPath.isEmpty()) return ParseResult.unresolved(locationPath, UnresolvedReason.EMPTY_PATH);
 
         List<LocationNode> nodes = new ArrayList<>();
 
         Rooms room = LocationResolver.fromStandort(normalizedLocationPath);
         if (room == null) return ParseResult.unresolved(locationPath, UnresolvedReason.NOT_VALID_ROOM);
-        LocationNode roomNode = new LocationNode(LocationTypes.ROOM, room.code());
+        LocationNode roomNode = LocationNode.of(LocationTypes.ROOM, room.code(), null);
 
         nodes.add(roomNode);
 
@@ -48,14 +47,14 @@ public final class StandortParser {
             default -> null;
         };
 
-        LocationNode deviceNode = new LocationNode(deviceType, String.valueOf(deviceChar) + numbers.get(0));
+        LocationNode deviceNode = LocationNode.of(deviceType, String.valueOf(deviceChar) + numbers.get(0), room.code());
         nodes.add(deviceNode);
 
         if (numbers.size() == 2) {
             if (childType == null) {
                 return ParseResult.unresolved(locationPath, UnresolvedReason.AMBIGUOUS_NUMBERS);
             }
-            LocationNode childNode = new LocationNode(childType, numbers.get(1));
+            LocationNode childNode = LocationNode.of(childType, numbers.get(1), null);
             nodes.add(childNode);
         }
 

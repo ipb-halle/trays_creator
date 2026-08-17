@@ -31,6 +31,5 @@ public class LocationNamingTest {
                 Arguments.of(LocationTypes.REFRIGERATOR, "R003", "K5", "R003.K5"),
                 Arguments.of(LocationTypes.FREEZER, "R002", "G11", "R002.G11")
         );
-
     }
 }

@@ -17,9 +17,9 @@ public class TrayStandortParserTest {
 
         assertThat(result.resolved().get(0).tray()).isEqualTo(testTray);
         List<LocationNode> nodes = List.of(
-                new LocationNode(LocationTypes.ROOM, "R2-208"),
-                new LocationNode(LocationTypes.REFRIGERATOR, "K1"),
-                new LocationNode(LocationTypes.SHELF, "3")
+                new LocationNode(LocationTypes.ROOM, "R2-208", "R2-208"),
+                new LocationNode(LocationTypes.REFRIGERATOR, "K1","R2-208.K1" ),
+                new LocationNode(LocationTypes.SHELF, "3", "3")
         );
         assertThat(result.resolved().get(0).path()).containsExactlyElementsOf(nodes);
     }
