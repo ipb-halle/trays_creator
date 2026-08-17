@@ -6,10 +6,10 @@ public record LocationNode(
         String name
 ) {
     public boolean movable() {
-        return type.isMovable();
+        return this.type.isMovable();
     }
 
     public static LocationNode of(LocationTypes type, String code, String roomCode) {
-        return new LocationNode(type, code, LocationNaming.nameFor(type, roomCode, code));
+        return new LocationNode(type, code, LocationNaming.nameFor(type, code, roomCode));
     }
 }

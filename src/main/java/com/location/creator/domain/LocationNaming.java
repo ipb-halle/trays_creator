@@ -5,7 +5,7 @@ public final class LocationNaming {
     private LocationNaming() {
     }
 
-    public static String nameFor(LocationTypes type, String roomCode, String code) {
+    public static String nameFor(LocationTypes type, String code, String roomCode) {
 
         return switch (type) {
             case REFRIGERATOR, FREEZER, BENCH -> roomCode + "." + code;
