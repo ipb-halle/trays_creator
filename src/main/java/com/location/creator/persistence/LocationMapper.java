@@ -18,4 +18,8 @@ public final class LocationMapper {
                 .ancestorEid(ancestorEid)
                 .build();
     }
+
+    public static LocationNode toDomain(LocationEntity entity) {
+        return LocationNode.of(entity.getType(), entity.getCode(), entity.getName());
+    }
 }
