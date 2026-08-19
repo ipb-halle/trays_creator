@@ -20,6 +20,6 @@ public final class LocationMapper {
     }
 
     public static LocationNode toDomain(LocationEntity entity) {
-        return LocationNode.of(entity.getType(), entity.getCode(), entity.getName());
+        return new LocationNode(entity.getType(), entity.getCode(), entity.getName());
     }
 }

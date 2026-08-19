@@ -68,7 +68,7 @@ public class LocationMapperTest {
     }
 
     public static Stream<Arguments> parameters_for_mapping() {
-        Stream<Arguments> argumentsStream = Stream.of(
+        return Stream.of(
                 Arguments.of(LocationNode.of(LocationTypes.ROOM, "R302", "R302"), null,
                         LocationEntity.builder()
                                 .name("R302")
@@ -96,7 +96,6 @@ public class LocationMapperTest {
                                 .build())
 
         );
-        return argumentsStream;
     }
 
 

@@ -5,6 +5,7 @@ import java.util.Objects;
 public final class LocationNaming {
 
     private LocationNaming() {
+        throw new AssertionError("No instances!");
     }
 
     public static String nameFor(LocationTypes type, String code, String roomCode) {
