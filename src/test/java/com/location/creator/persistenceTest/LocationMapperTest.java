@@ -28,15 +28,15 @@ public class LocationMapperTest {
     public static Stream<Arguments> roundtrip_toEntity_toDomain() {
         return Stream.of(
                 Arguments.of(
-                        new LocationNode(LocationTypes.ROOM, "R302", "R302"),
+                        LocationNode.of(LocationTypes.ROOM, "R302", "R302"),
                         null
                 ),
                 Arguments.of(
-                        new LocationNode(LocationTypes.REFRIGERATOR, "K1", "R302.K1"),
+                        LocationNode.of(LocationTypes.REFRIGERATOR, "K1", "R302"),
                         "ancestorRoom:12345"
                 ),
                 Arguments.of(
-                        new LocationNode(LocationTypes.SHELF, "3", "3"),
+                        LocationNode.of(LocationTypes.SHELF, "3", "R302"),
                         "ancestorFridge:12345"
                 )
 
@@ -47,11 +47,8 @@ public class LocationMapperTest {
     @ParameterizedTest
     @MethodSource("to_domain_parameters")
     public void to_domain_checksFields(LocationEntity entity, LocationNode node) {
-
         LocationNode domain = LocationMapper.toDomain(entity);
-
-        assertThat(domain).usingRecursiveComparison().ignoringFields("id", "eid", "ancestorEid").isEqualTo(node);
-
+        assertThat(domain).isEqualTo(node);
     }
 
     public static Stream<Arguments> to_domain_parameters() {
@@ -88,8 +85,8 @@ public class LocationMapperTest {
 
 
     @ParameterizedTest
-    @MethodSource("parameters_for_mapping_locationNode_to_LocationEntity")
-    public void to_entity_checkeEachField(LocationNode node, String ancestorEid, LocationEntity entity) {
+    @MethodSource("to_entity_parameters")
+    public void to_entity_checksEachField(LocationNode node, String ancestorEid, LocationEntity entity) {
         LocationEntity entityResult = LocationMapper.toEntity(node, ancestorEid);
 
         assertThat(entityResult.getId()).isNull();
@@ -97,7 +94,7 @@ public class LocationMapperTest {
         assertThat(entityResult).usingRecursiveComparison().ignoringFields("id", "eid").isEqualTo(entity);
     }
 
-    public static Stream<Arguments> parameters_for_mapping_locationNode_to_LocationEntity() {
+    public static Stream<Arguments> to_entity_parameters() {
         return Stream.of(
                 Arguments.of(LocationNode.of(LocationTypes.ROOM, "R302", "R302"), null,
                         LocationEntity.builder()

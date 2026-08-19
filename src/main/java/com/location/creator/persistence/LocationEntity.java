@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "locations", indexes = {@Index(name="idx_locations_name", columnList = "name")})
+@Table(name = "locations", indexes = {@Index(name="idx_locations_name_ancestor", columnList = "name, ancestor_eid")})
 public class LocationEntity {
 
     @Id
@@ -30,8 +30,8 @@ public class LocationEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column
-    private Boolean movable;
+    @Column(nullable = false)
+    private boolean movable;
 
     @Column(name = "ancestor_eid")
     private String ancestorEid;
