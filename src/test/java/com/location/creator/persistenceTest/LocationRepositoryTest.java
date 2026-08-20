@@ -5,6 +5,7 @@ import com.location.creator.domain.LocationTypes;
 import com.location.creator.persistence.LocationEntity;
 import com.location.creator.persistence.LocationMapper;
 import com.location.creator.persistence.LocationRepository;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
@@ -47,14 +48,8 @@ public class LocationRepositoryTest {
 
     @Test
     public void findByNameAndAncestorEid_distinguishesShelvesWithSameName() {
-        LocationNode ln1 = LocationNode.of(LocationTypes.SHELF, "3", "R302");
-        LocationNode ln2 = LocationNode.of(LocationTypes.SHELF, "3", "R2-208");
-        LocationEntity le1 = LocationMapper.toEntity(ln1, "fridge1:12345");
-        LocationEntity le2 = LocationMapper.toEntity(ln2, "fridge2:12345");
-        le1.setEid("shelf1:12345");
-        le2.setEid("shelf2:12345");
-        repo.save(le1);
-        repo.save(le2);
+        LocationEntity le1 = saveShelf("R302", "fridge1:12345", "shelf1:12345");
+        LocationEntity ln2 = saveShelf("R2-208", "fridge2:12345", "shelf2:12345");
         repo.flush();
         tem.clear();
 
@@ -62,29 +57,30 @@ public class LocationRepositoryTest {
         assertThat(ler1).isPresent();
         LocationEntity locationEntity = ler1.get();
         assertThat(locationEntity).isNotSameAs(le1);
-        assertThat(locationEntity.getName()).isEqualTo("3");
         assertThat(locationEntity).usingRecursiveComparison().ignoringFields("id").isEqualTo(le1);
 
     }
-    
-    @Test
-    public void findByName_showThat_MovableLocationsThrowsException(){
-        LocationNode ln1 = LocationNode.of(LocationTypes.SHELF, "3", "R302");
-        LocationNode ln2 = LocationNode.of(LocationTypes.SHELF, "3", "R2-208");
-        LocationEntity le1 = LocationMapper.toEntity(ln1, "fridge1:12345");
-        LocationEntity le2 = LocationMapper.toEntity(ln2, "fridge2:12345");
-        le1.setEid("shelf1:12345");
-        le2.setEid("shelf2:12345");
-        repo.save(le1);
-        repo.save(le2);
-        repo.flush();
-        tem.clear();
 
-        assertThatThrownBy(()->repo.findByName("3")).isInstanceOf(IncorrectResultSizeDataAccessException.class);
+    private @NonNull LocationEntity saveShelf(String roomCode, String ancestorEid, String eid) {
+        LocationNode ln1 = LocationNode.of(LocationTypes.SHELF, "3", roomCode);
+        LocationEntity le1 = LocationMapper.toEntity(ln1, ancestorEid);
+        le1.setEid(eid);
+        repo.save(le1);
+        return le1;
     }
 
     @Test
-    void findByName_returnsEmptyForUnknownName(){
+    public void findByName_throwsWhenNameIsAmbiguous () {
+        LocationEntity le1 = saveShelf("R302", "fridge1:12345", "shelf1:12345");
+        LocationEntity ln2 = saveShelf("R2-208", "fridge2:12345", "shelf2:12345");
+        repo.flush();
+        tem.clear();
+
+        assertThatThrownBy(() -> repo.findByName("3")).isInstanceOf(IncorrectResultSizeDataAccessException.class);
+    }
+
+    @Test
+    public void findByName_returnsEmptyForUnknownName() {
         Optional<LocationEntity> byName = repo.findByName("R999.K9");
         assertThat(byName).isEmpty();
     }
