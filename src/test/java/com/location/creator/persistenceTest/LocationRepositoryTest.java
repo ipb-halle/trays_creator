@@ -39,8 +39,24 @@ public class LocationRepositoryTest {
 
         assertThat(byName).isPresent();
         LocationEntity result = byName.get();
-
-        assertThat(result).isNotNull();
+        assertThat(result).isNotSameAs(entity);
         assertThat(result).usingRecursiveComparison().ignoringFields("id").isEqualTo(entity);
+    }
+
+    @Test
+    public void findByNameAndAncestorEid_distinguishesShelvesWithSameName() {
+        LocationNode locationNode = LocationNode.of(LocationTypes.SHELF, "3", "R302");
+        LocationEntity entity = LocationMapper.toEntity(locationNode, "fidge:12345");
+        entity.setEid("schelf:12345");
+        repo.save(entity);
+        repo.flush();
+        tem.clear();
+
+        Optional<LocationEntity> byNameAndAncestorEid = repo.findByNameAndAncestorEid(entity.getName(), entity.getAncestorEid());
+        assertThat(byNameAndAncestorEid).isPresent();
+        LocationEntity locationEntity = byNameAndAncestorEid.get();
+        assertThat(locationEntity).isNotSameAs(entity);
+        assertThat(locationEntity).usingRecursiveComparison().ignoringFields("id").isEqualTo(entity);
+
     }
 }
