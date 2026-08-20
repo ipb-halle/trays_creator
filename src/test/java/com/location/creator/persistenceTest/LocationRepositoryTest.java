@@ -5,7 +5,6 @@ import com.location.creator.domain.LocationTypes;
 import com.location.creator.persistence.LocationEntity;
 import com.location.creator.persistence.LocationMapper;
 import com.location.creator.persistence.LocationRepository;
-import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
@@ -49,7 +48,7 @@ public class LocationRepositoryTest {
     @Test
     public void findByNameAndAncestorEid_distinguishesShelvesWithSameName() {
         LocationEntity le1 = saveShelf("R302", "fridge1:12345", "shelf1:12345");
-        LocationEntity ln2 = saveShelf("R2-208", "fridge2:12345", "shelf2:12345");
+        saveShelf("R2-208", "fridge2:12345", "shelf2:12345");
         repo.flush();
         tem.clear();
 
@@ -61,18 +60,11 @@ public class LocationRepositoryTest {
 
     }
 
-    private @NonNull LocationEntity saveShelf(String roomCode, String ancestorEid, String eid) {
-        LocationNode ln1 = LocationNode.of(LocationTypes.SHELF, "3", roomCode);
-        LocationEntity le1 = LocationMapper.toEntity(ln1, ancestorEid);
-        le1.setEid(eid);
-        repo.save(le1);
-        return le1;
-    }
 
     @Test
-    public void findByName_throwsWhenNameIsAmbiguous () {
-        LocationEntity le1 = saveShelf("R302", "fridge1:12345", "shelf1:12345");
-        LocationEntity ln2 = saveShelf("R2-208", "fridge2:12345", "shelf2:12345");
+    public void findByName_throwsWhenNameIsAmbiguous() {
+        saveShelf("R302", "fridge1:12345", "shelf1:12345");
+        saveShelf("R2-208", "fridge2:12345", "shelf2:12345");
         repo.flush();
         tem.clear();
 
@@ -83,5 +75,13 @@ public class LocationRepositoryTest {
     public void findByName_returnsEmptyForUnknownName() {
         Optional<LocationEntity> byName = repo.findByName("R999.K9");
         assertThat(byName).isEmpty();
+    }
+
+    private LocationEntity saveShelf(String roomCode, String ancestorEid, String eid) {
+        LocationNode ln1 = LocationNode.of(LocationTypes.SHELF, "3", roomCode);
+        LocationEntity le1 = LocationMapper.toEntity(ln1, ancestorEid);
+        le1.setEid(eid);
+        repo.save(le1);
+        return le1;
     }
 }
