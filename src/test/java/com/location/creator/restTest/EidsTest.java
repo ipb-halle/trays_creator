@@ -14,7 +14,7 @@ public class EidsTest {
     }
 
     @Test
-    public void toUuid_stripPrefixThrowsException() {
+    public void toUuid_returnsPlainUuidUnchanged() {
         String eid = "123456789abcde";
         assertThat(Eids.toUuid(eid)).isEqualTo("123456789abcde");
     }
