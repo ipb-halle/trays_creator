@@ -1,21 +1,28 @@
 package com.location.creator.rest;
 
-import org.hibernate.AssertionFailure;
-import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
-public final class CreateLocationRequest {
+public record CreateLocationRequest(
+        String typeId,
+        String LocationName,
+        String ancestorId,
+        Integer rows,
+        Integer columns
+) {
+    private static final String INVENTORY_SECURITY_FIELD_ID = "";
 
-    private CreateLocationRequest() {
-        throw new AssertionFailure("no instances allowed!");
+
+    public static CreateLocationRequest of(String typeId, String locationName, String ancestorId) {
+
+        return new CreateLocationRequest(typeId, locationName, ancestorId, null, null);
     }
 
-    public static JsonNode of(String typeId, String locationName, String ancestorId) {
+    public static CreateLocationRequest ofTray(String typeId, String locationName, String ancestorId) {
 
-        return null;
+        return new CreateLocationRequest(typeId, locationName, ancestorId, null, null);
     }
 
-    public static JsonNode toJson(ObjectMapper mapper) {
+    public CreateLocationRequest toJson(ObjectMapper mapper) {
         return null;
     }
 }
