@@ -32,18 +32,17 @@ public record CreateLocationRequest(
         attributes.put("typeId", typeId);
         attributes.put("name", name);
         ArrayNode ancestors = attributes.putArray("ancestors");
-        if (!ancestorId.isEmpty()) {
+        if (ancestorId != null && !ancestorId.isBlank()) {
             ancestors.addObject().put("id", Eids.toUuid(ancestorId));
+            ArrayNode fields = attributes.putArray("fields");
+            if (rows == null) {
+                ObjectNode jsonNodes = fields.addObject();
+                jsonNodes.put("id", INVENTORY_SECURITY_FIELD_ID);
+                jsonNodes.putObject("content").put("value", "Default");
+            } else {
+                attributes.put("isGrid", true).put("rows", rows).put("columns", columns);
+            }
         }
-        ArrayNode fields = attributes.putArray("fields");
-        if (rows == null) {
-            ObjectNode jsonNodes = fields.addObject();
-            jsonNodes.put("id", INVENTORY_SECURITY_FIELD_ID);
-            jsonNodes.putObject("content").put("value", "Default");
-        } else {
-            attributes.put("isGrid", true).put("rows", rows).put("columns", columns);
-        }
-
         return root;
     }
 }
