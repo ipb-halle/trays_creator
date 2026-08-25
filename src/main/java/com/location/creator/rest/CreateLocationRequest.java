@@ -9,19 +9,19 @@ public record CreateLocationRequest(
         String name,
         String ancestorId,
         Integer rows,
-        Integer columns
+        Integer columns,
+        String barcode
 ) {
     private static final String INVENTORY_SECURITY_FIELD_ID = "242870a3-dc72-4c84-82e7-6ab8cfc854e7";
 
 
     public static CreateLocationRequest of(String typeId, String locationName, String ancestorId) {
 
-        return new CreateLocationRequest(typeId, locationName, ancestorId, null, null);
+        return new CreateLocationRequest(typeId, locationName, ancestorId, null, null, null);
     }
 
     public static CreateLocationRequest ofTray(String typeId, String locationName, String ancestorId, int rows, int columns) {
-
-        return new CreateLocationRequest(typeId, locationName, ancestorId, rows, columns);
+        return new CreateLocationRequest(typeId, locationName, ancestorId, rows, columns, locationName);
     }
 
     public ObjectNode toJson(ObjectMapper mapper) {
@@ -31,18 +31,22 @@ public record CreateLocationRequest(
         ObjectNode attributes = data.putObject("attributes");
         attributes.put("typeId", typeId);
         attributes.put("name", name);
+
         ArrayNode ancestors = attributes.putArray("ancestors");
+        ArrayNode fields = attributes.putArray("fields");
+        ObjectNode jsonNodes = fields.addObject();
+        jsonNodes.put("id", INVENTORY_SECURITY_FIELD_ID);
+        jsonNodes.putObject("content").put("value", "Default");
         if (ancestorId != null && !ancestorId.isBlank()) {
             ancestors.addObject().put("id", Eids.toUuid(ancestorId));
-            ArrayNode fields = attributes.putArray("fields");
-            if (rows == null) {
-                ObjectNode jsonNodes = fields.addObject();
-                jsonNodes.put("id", INVENTORY_SECURITY_FIELD_ID);
-                jsonNodes.putObject("content").put("value", "Default");
-            } else {
-                attributes.put("isGrid", true).put("rows", rows).put("columns", columns);
-            }
         }
+        if (rows != null) {
+            attributes.put("isGrid", true).put("rows", rows).put("columns", columns);
+        }
+        if (barcode != null) {
+            attributes.put("barcode", barcode);
+        }
+
         return root;
     }
 }
