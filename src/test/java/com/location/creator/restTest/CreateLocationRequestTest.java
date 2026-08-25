@@ -23,6 +23,7 @@ public class CreateLocationRequestTest {
         ObjectNode body = CreateLocationRequest.of(typeId, node.name(), ancestorEid).toJson(mapper);
         assertThat(body.path("data").path("type").asString()).isEqualTo("inventoryLocation");
         assertThat(body.path("data").path("attributes").path("name").asString()).isEqualTo(node.name());
+        assertThat(body.path("data").path("attributes").path("typeId").asString()).isEqualTo(typeId);
         assertThat(body.path("data").path("attributes").path("ancestors").size()).isEqualTo(1);
         assertThat(body.path("data").path("attributes").path("ancestors").path(0).path("id").asString()).isEqualTo("37935741-e8ec-4622-aa6a-814b22c8a1ac");
         assertThat(body.path("data").path("attributes").path("fields").path(0).path("content").path("value").asString()).isEqualTo("Default");

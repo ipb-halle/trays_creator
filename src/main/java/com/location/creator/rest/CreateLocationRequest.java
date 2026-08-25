@@ -11,7 +11,7 @@ public record CreateLocationRequest(
         Integer rows,
         Integer columns
 ) {
-    private static final String INVENTORY_SECURITY_FIELD_ID = "";
+    private static final String INVENTORY_SECURITY_FIELD_ID = "242870a3-dc72-4c84-82e7-6ab8cfc854e7";
 
 
     public static CreateLocationRequest of(String typeId, String locationName, String ancestorId) {
