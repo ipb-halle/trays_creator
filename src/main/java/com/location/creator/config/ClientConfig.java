@@ -1,13 +1,13 @@
 package com.location.creator.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 
-@Component
+@Configuration
 public class ClientConfig {
 
     @Bean
